@@ -5,6 +5,7 @@
 	"scripts": {
 		"build": "tsc --noEmit && node esbuild.config.mjs",
 		"lint": "eslint .",
+		"pretest": "node esbuild.config.mjs",
 		"test": "node test/run.js"
 	},
 	"devDependencies": {
