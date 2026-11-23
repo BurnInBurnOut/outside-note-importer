@@ -1,0 +1,45 @@
+/* Outside Note Importer */
+.oni-status {
+	display: inline-flex;
+	align-items: center;
+	gap: 4px;
+	cursor: pointer;
+	color: var(--text-accent);
+}
+.oni-status:hover { color: var(--text-accent-hover); }
+.oni-status-icon { display: inline-flex; }
+.oni-status-icon svg { width: 13px; height: 13px; }
+
+.oni-modal .oni-lede { margin-top: 0; color: var(--text-muted); }
+.oni-modal .oni-source {
+	font-family: var(--font-monospace);
+	font-size: var(--font-ui-smaller);
+	color: var(--text-faint);
+	background: var(--background-secondary);
+	border-radius: var(--radius-s);
+	padding: 6px 8px;
+	margin-bottom: 8px;
+	word-break: break-all;
+}
+.oni-modal .oni-input { width: 260px; }
+.oni-modal .oni-footer {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 12px;
+	margin-top: 16px;
+}
+.oni-modal .oni-buttons { display: flex; gap: 8px; }
+.oni-modal .oni-link {
+	background: none;
+	box-shadow: none;
+	border: none;
+	padding: 0;
+	color: var(--text-faint);
+	font-size: var(--font-ui-smaller);
+	text-decoration: underline;
+	cursor: pointer;
+	height: auto;
+}
+.oni-modal .oni-link:hover { color: var(--text-muted); }
+.oni-textarea { width: 100%; font-family: var(--font-monospace); }

@@ -1,0 +1,68 @@
+name: Release Obsidian plugin
+
+# Two ways to release:
+#  1. GitHub website: Actions → "Release Obsidian plugin" → Run workflow.
+#     It releases whatever version is in manifest.json.
+#  2. Terminal: git tag 1.1.0 && git push origin 1.1.0
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - "*"
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      id-token: write
+      attestations: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22.x"
+          cache: npm
+
+      - name: Install
+        run: npm ci
+
+      - name: Lint (same rules as Obsidian's automated review)
+        run: npm run lint
+
+      - name: Test
+        run: npm test
+
+      - name: Build
+        run: npm run build
+
+      - name: Work out the version
+        id: version
+        run: |
+          version=$(node -p "require('./manifest.json').version")
+          if [[ "$GITHUB_REF" == refs/tags/* && "${GITHUB_REF#refs/tags/}" != "$version" ]]; then
+            echo "Tag ${GITHUB_REF#refs/tags/} doesn't match manifest.json version $version" >&2
+            exit 1
+          fi
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+
+      - name: Generate artifact attestation
+        uses: actions/attest@v4
+        with:
+          subject-path: |
+            main.js
+            manifest.json
+            styles.css
+
+      - name: Create release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          gh release create "$VERSION" \
+            --title "$VERSION" \
+            --target "$GITHUB_SHA" \
+            --generate-notes \
+            main.js manifest.json styles.css

@@ -1,0 +1,9 @@
+{
+	"id": "outside-note-importer",
+	"name": "Outside Note Importer",
+	"version": "1.1.0",
+	"minAppVersion": "1.14.4",
+	"description": "Import Markdown files you open from outside your vault, like ones in Downloads, into a vault folder so they show up in search and links.",
+	"author": "Andrew",
+	"isDesktopOnly": true
+}
