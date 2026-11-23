@@ -17,6 +17,7 @@ import {
 	setIcon,
 } from "obsidian";
 import * as obsidian from "obsidian";
+import { shell } from "electron";
 import * as fs from "fs";
 import * as os from "os";
 import * as path from "path";
@@ -451,10 +452,9 @@ export default class OutsideNoteImporter extends Plugin {
 
 	private async trashOriginal(real: string): Promise<boolean> {
 		try {
-			// Electron's shell is the only way to reach the macOS Trash (recoverable,
+			// Electron's shell is the only way to reach the system Trash (recoverable,
 			// unlike fs.unlink). Desktop-only; the manifest sets isDesktopOnly.
-			const electron = require("electron") as { shell: { trashItem(p: string): Promise<void> } };
-			await electron.shell.trashItem(real);
+			await shell.trashItem(real);
 			return true;
 		} catch (err) {
 			console.warn("[outside-note-importer] couldn't trash original", err);
