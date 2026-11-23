@@ -199,10 +199,24 @@ require.cache.electron = { id: "electron", filename: "electron", loaded: true, e
 const bundle = require(path.join(__dirname, "..", "main.js"));
 const PluginClass = bundle.default;
 
-const tick = () => new Promise((r) => setTimeout(r, 5));
+// Wait for the plugin to finish whatever it started (imports, settings saves).
+// Polls the plugin's in-flight set instead of sleeping a fixed time, so the
+// suite is reliable on slow CI runners. Fails loudly if an import hangs.
+let current = null;
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+async function tick() {
+	const deadline = Date.now() + 10000;
+	await sleep(5);
+	while (current && current.busy && current.busy.size > 0) {
+		if (Date.now() > deadline) throw new Error("import still running after 10s");
+		await sleep(10);
+	}
+	await sleep(5);
+}
 async function boot(settings) {
 	const app = makeApp();
 	const plugin = new PluginClass(app, {});
+	current = plugin;
 	if (settings) plugin._data = settings;
 	await plugin.onload();
 	return { app, plugin };
