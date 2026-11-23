@@ -49,7 +49,7 @@ jobs:
           echo "version=$version" >> "$GITHUB_OUTPUT"
 
       - name: Generate artifact attestation
-        uses: actions/attest@v5
+        uses: actions/attest@v4
         with:
           subject-path: |
             main.js
